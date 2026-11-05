@@ -1,0 +1,169 @@
+{
+  "semesters": [
+    {
+      "id": "sem-1",
+      "name": "Semester 1",
+      "courses": [
+        {
+          "id": "aljabar-linier",
+          "name": "Aljabar Linier",
+          "materials": [
+            {
+              "id": "m1",
+              "title": "Bab 1 - Vektor dan Ruang Vektor",
+              "type": "materi",
+              "driveId": "PLACEHOLDER",
+              "driveUrl": "#",
+              "mimeType": "application/pdf",
+              "size": 2048000,
+              "lastModified": "2024-09-15",
+              "tags": ["vektor", "ruang vektor"]
+            },
+            {
+              "id": "m2",
+              "title": "Bab 2 - Matriks dan Determinan",
+              "type": "materi",
+              "driveId": "PLACEHOLDER",
+              "driveUrl": "#",
+              "mimeType": "application/pdf",
+              "size": 1536000,
+              "lastModified": "2024-09-22",
+              "tags": ["matriks", "determinan"]
+            }
+          ],
+          "assignments": [
+            {
+              "id": "a1",
+              "title": "Tugas 1 - Operasi Vektor",
+              "type": "tugas",
+              "driveId": "PLACEHOLDER",
+              "driveUrl": "#",
+              "mimeType": "application/pdf",
+              "size": 512000,
+              "lastModified": "2024-09-20",
+              "tags": ["vektor"]
+            }
+          ]
+        },
+        {
+          "id": "basis-data",
+          "name": "Basis Data",
+          "materials": [
+            {
+              "id": "m3",
+              "title": "Pengantar Basis Data",
+              "type": "materi",
+              "driveId": "PLACEHOLDER",
+              "driveUrl": "#",
+              "mimeType": "application/pdf",
+              "size": 3072000,
+              "lastModified": "2024-09-10",
+              "tags": ["database", "pengantar"]
+            }
+          ],
+          "assignments": []
+        }
+      ]
+    },
+    {
+      "id": "sem-2",
+      "name": "Semester 2",
+      "courses": [
+        {
+          "id": "struktur-data",
+          "name": "Struktur Data",
+          "materials": [
+            {
+              "id": "m4",
+              "title": "Array dan Linked List",
+              "type": "materi",
+              "driveId": "PLACEHOLDER",
+              "driveUrl": "#",
+              "mimeType": "application/pdf",
+              "size": 1800000,
+              "lastModified": "2025-02-10",
+              "tags": ["array", "linked list"]
+            }
+          ],
+          "assignments": [
+            {
+              "id": "a2",
+              "title": "Tugas 1 - Implementasi Stack",
+              "type": "tugas",
+              "driveId": "PLACEHOLDER",
+              "driveUrl": "#",
+              "mimeType": "application/pdf",
+              "size": 450000,
+              "lastModified": "2025-02-18",
+              "tags": ["stack"]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "notes": [
+    {
+      "id": "n1",
+      "title": "Tips Belajar Aljabar Linier",
+      "course": "Aljabar Linier",
+      "semester": "Semester 1",
+      "content": "Fokus pada pemahaman konsep vektor sebelum masuk ke matriks. Latihan soal minimal 10 per topik.",
+      "lastModified": "2024-10-01",
+      "tags": ["tips", "aljabar linier"]
+    },
+    {
+      "id": "n2",
+      "title": "Cara Cepat Normalisasi Database",
+      "course": "Basis Data",
+      "semester": "Semester 1",
+      "content": "1NF: atomik. 2NF: hilangkan partial dependency. 3NF: hilangkan transitive dependency.",
+      "lastModified": "2024-11-05",
+      "tags": ["normalisasi", "database"]
+    }
+  ],
+  "literacy": {
+    "journals": [
+      {
+        "id": "j1",
+        "title": "A Survey on Deep Learning Techniques",
+        "author": "Zhang et al.",
+        "year": 2023,
+        "topic": "Machine Learning",
+        "summary": "Survey komprehensif tentang teknik deep learning terbaru.",
+        "driveUrl": "#",
+        "tags": ["deep learning", "survey"]
+      }
+    ],
+    "books": [
+      {
+        "id": "b1",
+        "title": "Introduction to Algorithms (CLRS)",
+        "author": "Cormen, Leiserson, Rivest, Stein",
+        "year": 2009,
+        "topic": "Algoritma",
+        "summary": "Buku wajib algoritma. Bab sorting dan graph paling berguna.",
+        "tags": ["algoritma", "sorting", "graph"]
+      }
+    ],
+    "articles": [
+      {
+        "id": "ar1",
+        "title": "Understanding Git Branching",
+        "author": "Atlassian",
+        "year": 2024,
+        "topic": "Version Control",
+        "summary": "Panduan visual tentang git branching strategy.",
+        "url": "https://www.atlassian.com/git/tutorials/using-branches",
+        "tags": ["git", "version control"]
+      }
+    ]
+  },
+  "stats": {
+    "totalFiles": 6,
+    "totalNotes": 2,
+    "totalLiteracy": 3,
+    "semesters": 2,
+    "courses": 3
+  }
+}

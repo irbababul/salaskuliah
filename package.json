@@ -1,0 +1,38 @@
+{
+  "name": "salaskuliah",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "node server.js",
+    "dev:front": "vite",
+    "dev:back": "node server.js",
+    "build": "vite build",
+    "lint": "oxlint",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "concurrently": "^10.0.6",
+    "cookie": "1.0.2",
+    "cors": "^2.8.6",
+    "express": "^5.3.0",
+    "fuse.js": "^7.5.0",
+    "googleapis": "^144.0.0",
+    "lucide-react": "^1.66.0",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1",
+    "react-icons": "^5.7.0",
+    "react-router-dom": "^7.18.5",
+    "recharts": "3.10.1"
+  },
+  "devDependencies": {
+    "@tailwindcss/vite": "^4.3.3",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "@vitejs/plugin-react": "^6.1.2",
+    "dotenv": "^18.0.9",
+    "oxlint": "^1.89.0",
+    "tailwindcss": "^4.3.3",
+    "vite": "^8.3.5"
+  }
+}
