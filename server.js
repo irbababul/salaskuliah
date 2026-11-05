@@ -1,15 +1,14 @@
 import dotenv from "dotenv";
 import { resolve, dirname } from "path";
-import { fileURLToPath, pathToFileURL } from "url";
+import { fileURLToPath } from "url";
 import { createRequire } from "module";
 import { createServer } from "http";
-import express from "express";
 
 const __dir = dirname(fileURLToPath(import.meta.url));
 dotenv.config({ path: resolve(__dir, ".env.local") });
 
 const require = createRequire(import.meta.url);
-const app = require(resolve(__dir, "api/server.js"));
+const app = require(resolve(__dir, "api/server.cjs"));
 
 const PORT = process.env.API_PORT || 3001;
 createServer(app).listen(PORT, () => {
