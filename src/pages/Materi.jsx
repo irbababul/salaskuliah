@@ -228,7 +228,7 @@ export default function Materi() {
             <select value={filterCourse} onChange={e=>setFilterCourse(e.target.value)}
               style={{ padding:'8px 12px', borderRadius:8, border:'1px solid var(--border)', backgroundColor:'var(--bg-card)', color:'var(--text-primary)', fontSize:13.5, outline:'none', cursor:'pointer', minWidth:180 }}>
               <option value="">Semua Mata Kuliah</option>
-              {(filterSem ? courseList.filter(c=>c.semester_id===filterSem) : courseList).map(c=><option key={c.id} value={c.id}>{c.code?c.code+' - '+c.name:c.name}</option>)}
+              {(filterSem ? courseList.filter(c=>c.semester_id===filterSem) : courseList).map(c=><option key={c.id} value={c.id}>{c.name}</option>)}
             </select>
           </div>
         </div>
@@ -242,8 +242,8 @@ export default function Materi() {
         </div>
       ):(
         <div style={{ display:'flex', flexDirection:'column', gap:32 }}>
-          {visibleSems.map(sem=>{
-            const semCourses=courseList.filter(c=>c.semester_id===sem.id)
+          {visibleSems.filter(sem => !filterCourse || courseList.some(c=>c.semester_id===sem.id && c.id===filterCourse)).map(sem=>{
+            const semCourses=courseList.filter(c=>c.semester_id===sem.id && (!filterCourse || c.id===filterCourse))
             return (
               <div key={sem.id}>
                 <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:14 }}>
