@@ -118,8 +118,8 @@ function CoverInput({ value, onChange }) {
 }
 
 function BookForm({ initial = EMPTY, categories, onSave, onCancel }) {
-  const [form, setForm] = useState, useRef({ ...EMPTY, ...initial })
-  const [errors, setErrors] = useState, useRef({})
+  const [form, setForm] = useState({ ...EMPTY, ...initial })
+  const [errors, setErrors] = useState({})
   const set = (k, v) => setForm(p => ({ ...p, [k]: v }))
 
   const validate = () => {
@@ -306,16 +306,16 @@ function BookRow({ book, onClick }) {
 export default function MyBooks() {
   const { books, sessions, categories, addBook, updateBook, deleteBook } = useReading()
   const { isAdmin } = useAuth()
-  const [view, setView] = useState, useRef('grid')
-  const [search, setSearch] = useState, useRef('')
-  const [filterStatus, setFilterStatus] = useState, useRef('')
-  const [filterCategory, setFilterCategory] = useState, useRef('')
-  const [sortBy, setSortBy] = useState, useRef('createdAt')
-  const [sortDir, setSortDir] = useState, useRef('desc')
-  const [showForm, setShowForm] = useState, useRef(false)
-  const [editBook, setEditBook] = useState, useRef(null)
-  const [detailBook, setDetailBook] = useState, useRef(null)
-  const [deleteConfirm, setDeleteConfirm] = useState, useRef(null)
+  const [view, setView] = useState('grid')
+  const [search, setSearch] = useState('')
+  const [filterStatus, setFilterStatus] = useState('')
+  const [filterCategory, setFilterCategory] = useState('')
+  const [sortBy, setSortBy] = useState('createdAt')
+  const [sortDir, setSortDir] = useState('desc')
+  const [showForm, setShowForm] = useState(false)
+  const [editBook, setEditBook] = useState(null)
+  const [detailBook, setDetailBook] = useState(null)
+  const [deleteConfirm, setDeleteConfirm] = useState(null)
 
   const filtered = useMemo(() => {
     let list = [...books]
