@@ -1,4 +1,4 @@
-﻿import { useState, useMemo } from 'react'
+﻿import React, { useState, useRef, useMemo } from 'react'
 import { FiPlus, FiEdit2, FiTrash2, FiGrid, FiList, FiSearch, FiX, FiChevronDown, FiChevronUp } from 'react-icons/fi'
 import { useReading } from '../../reading/ReadingContext'
 import Modal from '../../reading/components/Modal'
@@ -6,6 +6,7 @@ import ProgressBar from '../../reading/components/ProgressBar'
 import EmptyState from '../../reading/components/EmptyState'
 import { TextInput, TextareaInput, SelectInput } from '../../reading/components/InputField'
 import { BOOK_STATUS, STATUS_COLOR, STATUS_EMOJI } from '../../reading/constants'
+import { adminApi } from '../../utils/api'
 import { useAuth } from '../../contexts/AuthContext'
 
 /* ─── Helpers ────────────────────────────────────────────────── */
@@ -37,9 +38,88 @@ function StarRating({ value, onChange, readonly = false }) {
 /* ─── Book Form ──────────────────────────────────────────────── */
 const EMPTY = { title: '', author: '', category: '', publisher: '', year: '', totalPages: '', cover: '', status: 'Belum Dibaca', startDate: '', targetDate: '', finishedDate: '', rating: null, notes: '' }
 
+/* --- Cover Input dengan upload ke Drive --- */
+function CoverInput({ value, onChange }) {
+  const [uploading, setUploading] = useState(false)
+  const [error, setError] = useState('')
+  const [gisToken, setGisToken] = useState(window._cachedDriveToken || '')
+  const inputRef = useRef()
+
+  function handleSignIn() {
+    const tokenClient = google.accounts.oauth2.initTokenClient({
+      client_id: '55856679506-u1606nt9se2pv3itspj6o6uhr6ghcsrn.apps.googleusercontent.com',
+      scope: 'https://www.googleapis.com/auth/drive.file',
+      hint: 'iirsalas9@gmail.com',
+      callback: (r) => { if (r.access_token) { setGisToken(r.access_token); window._cachedDriveToken = r.access_token } },
+    })
+    tokenClient.requestAccessToken({ prompt: 'none', hint: 'iirsalas9@gmail.com' })
+  }
+
+  async function handleUpload(file) {
+    if (!file) return
+    if (!file.type.startsWith('image/')) return setError('File harus gambar (jpg/png/webp)')
+    if (!gisToken) return setError('Login Google dulu')
+    setUploading(true); setError('')
+    try {
+      // Buat/cari folder COVERS di Drive
+      const COVERS_FOLDER_ID = '1eHwBSzC2grRm2ozECXhmUipQSiPeOXx-'
+      const metadata = { name: 'cover_' + Date.now() + '_' + file.name, mimeType: file.type, parents: [COVERS_FOLDER_ID] }
+      const form = new FormData()
+      form.append('metadata', new Blob([JSON.stringify(metadata)], { type: 'application/json' }))
+      form.append('file', file)
+      const res = await fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&fields=id,webContentLink,webViewLink', {
+        method: 'POST',
+        headers: { Authorization: 'Bearer ' + gisToken },
+        body: form,
+      })
+      const data = await res.json()
+      if (!data.id) throw new Error(data.error?.message || 'Upload gagal')
+      // Buat file public supaya bisa ditampilkan sebagai gambar
+      await fetch('https://www.googleapis.com/drive/v3/files/' + data.id + '/permissions', {
+        method: 'POST',
+        headers: { Authorization: 'Bearer ' + gisToken, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ role: 'reader', type: 'anyone' })
+      })
+      // Gunakan direct image URL
+      const imageUrl = 'https://drive.google.com/thumbnail?id=' + data.id + '&sz=w400'
+      onChange(imageUrl)
+    } catch(e) { setError(e.message) }
+    setUploading(false)
+  }
+
+  return (
+    <div>
+      <p style={{ fontSize: 13, fontWeight: 500, color: 'var(--text-secondary)', marginBottom: 6 }}>Cover Buku</p>
+      <div style={{ display: 'flex', gap: 8, alignItems: 'flex-start' }}>
+        <div style={{ flex: 1 }}>
+          <input value={value||''} onChange={e=>onChange(e.target.value)} placeholder="https://... atau upload gambar"
+            style={{ width: '100%', padding: '10px 12px', borderRadius: 8, border: '1px solid var(--border)', backgroundColor: 'var(--bg-hover)', color: 'var(--text-primary)', fontSize: 13.5, outline: 'none', boxSizing: 'border-box' }}/>
+        </div>
+        {value && (
+          <img src={value} alt="cover preview" style={{ width: 48, height: 60, objectFit: 'cover', borderRadius: 6, flexShrink: 0, border: '1px solid var(--border)' }} onError={e=>e.target.style.display='none'}/>
+        )}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 4, flexShrink: 0 }}>
+          {!gisToken ? (
+            <button type="button" onClick={handleSignIn} style={{ height: 38, padding: '0 10px', borderRadius: 8, border: '1px solid var(--border)', backgroundColor: 'var(--bg-hover)', color: 'var(--text-secondary)', fontSize: 12, cursor: 'pointer', whiteSpace: 'nowrap' }}>
+              Login Google
+            </button>
+          ) : (
+            <button type="button" onClick={()=>inputRef.current?.click()} disabled={uploading}
+              style={{ height: 38, padding: '0 12px', borderRadius: 8, border: '1px solid var(--accent)', backgroundColor: 'var(--accent-dim)', color: 'var(--accent)', fontSize: 12, fontWeight: 600, cursor: uploading?'wait':'pointer', whiteSpace: 'nowrap', opacity: uploading?0.6:1 }}>
+              {uploading ? 'Uploading...' : 'Upload Gambar'}
+            </button>
+          )}
+          <input ref={inputRef} type="file" accept="image/*" style={{ display: 'none' }} onChange={e=>handleUpload(e.target.files[0])}/>
+        </div>
+      </div>
+      {error && <p style={{ fontSize: 12, color: '#ef4444', marginTop: 4 }}>{error}</p>}
+    </div>
+  )
+}
+
 function BookForm({ initial = EMPTY, categories, onSave, onCancel }) {
-  const [form, setForm] = useState({ ...EMPTY, ...initial })
-  const [errors, setErrors] = useState({})
+  const [form, setForm] = useState, useRef({ ...EMPTY, ...initial })
+  const [errors, setErrors] = useState, useRef({})
   const set = (k, v) => setForm(p => ({ ...p, [k]: v }))
 
   const validate = () => {
@@ -80,7 +160,7 @@ function BookForm({ initial = EMPTY, categories, onSave, onCancel }) {
         <TextInput label="Target Selesai" value={form.targetDate} onChange={e => set('targetDate', e.target.value)} type="date" />
         <TextInput label="Tgl Selesai" value={form.finishedDate} onChange={e => set('finishedDate', e.target.value)} type="date" />
       </div>
-      <TextInput label="URL Cover" value={form.cover} onChange={e => set('cover', e.target.value)} placeholder="https://..." />
+      <CoverInput value={form.cover} onChange={v => set('cover', v)} />
       <div>
         <p style={{ fontSize: 13, fontWeight: 500, color: 'var(--text-secondary)', marginBottom: 6 }}>Rating Pribadi</p>
         <StarRating value={form.rating} onChange={v => set('rating', v)} />
@@ -226,16 +306,16 @@ function BookRow({ book, onClick }) {
 export default function MyBooks() {
   const { books, sessions, categories, addBook, updateBook, deleteBook } = useReading()
   const { isAdmin } = useAuth()
-  const [view, setView] = useState('grid')
-  const [search, setSearch] = useState('')
-  const [filterStatus, setFilterStatus] = useState('')
-  const [filterCategory, setFilterCategory] = useState('')
-  const [sortBy, setSortBy] = useState('createdAt')
-  const [sortDir, setSortDir] = useState('desc')
-  const [showForm, setShowForm] = useState(false)
-  const [editBook, setEditBook] = useState(null)
-  const [detailBook, setDetailBook] = useState(null)
-  const [deleteConfirm, setDeleteConfirm] = useState(null)
+  const [view, setView] = useState, useRef('grid')
+  const [search, setSearch] = useState, useRef('')
+  const [filterStatus, setFilterStatus] = useState, useRef('')
+  const [filterCategory, setFilterCategory] = useState, useRef('')
+  const [sortBy, setSortBy] = useState, useRef('createdAt')
+  const [sortDir, setSortDir] = useState, useRef('desc')
+  const [showForm, setShowForm] = useState, useRef(false)
+  const [editBook, setEditBook] = useState, useRef(null)
+  const [detailBook, setDetailBook] = useState, useRef(null)
+  const [deleteConfirm, setDeleteConfirm] = useState, useRef(null)
 
   const filtered = useMemo(() => {
     let list = [...books]
