@@ -80,9 +80,11 @@ function SemesterCard({ sem, courses }) {
       </div>
       <div style={{ display: 'flex', flexWrap: 'wrap', gap: 5 }}>
         {courseList.map(c => (
-          <span key={c.id} style={{ display: 'inline-flex', alignItems: 'center', padding: '3px 9px', borderRadius: 99, fontSize: 11.5, fontWeight: 500, backgroundColor: 'var(--accent-dim)', color: 'var(--accent-light)' }}>
-            {c.code ? `${c.code} - ${c.name}` : c.name}
-          </span>
+          <a key={c.id} href={'/materi'} style={{ display: 'inline-flex', alignItems: 'center', padding: '3px 9px', borderRadius: 99, fontSize: 11.5, fontWeight: 500, backgroundColor: 'var(--accent-dim)', color: 'var(--accent-light)', textDecoration: 'none', cursor: 'pointer', transition: 'opacity 0.15s' }}
+            onMouseEnter={e=>e.currentTarget.style.opacity='0.75'}
+            onMouseLeave={e=>e.currentTarget.style.opacity='1'}>
+            {c.name}
+          </a>
         ))}
         {courseList.length === 0 && <span style={{ fontSize: 12, color: 'var(--text-muted)' }}>Belum ada mata kuliah</span>}
       </div>
@@ -237,7 +239,7 @@ export default function Dashboard() {
               <p style={{ fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.07em', color: 'var(--text-muted)', marginBottom: 4 }}>AKADEMIK</p>
               <h2 style={{ fontSize: 17, fontWeight: 600, color: 'var(--text-primary)' }}>Semester</h2>
             </div>
-            {isAdmin && <AdminAddButton label="+ Tambah Semester" onClick={() => window.location.href = '/materi'} />}
+            {isAdmin && <AdminAddButton label="Tambah Semester" onClick={() => window.location.href = '/materi'} />}
           </div>
           <div className="grid gap-4 md:grid-cols-2">
             {semList.map(sem => <SemesterCard key={sem.id} sem={sem} courses={courseList} />)}
