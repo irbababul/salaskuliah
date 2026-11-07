@@ -1,4 +1,4 @@
-﻿import React, { useState, useRef, useMemo } from 'react'
+import React, { useState, useRef, useMemo } from 'react'
 import { FiPlus, FiEdit2, FiTrash2, FiGrid, FiList, FiSearch, FiX, FiChevronDown, FiChevronUp } from 'react-icons/fi'
 import { useReading } from '../../reading/ReadingContext'
 import Modal from '../../reading/components/Modal'
@@ -9,7 +9,7 @@ import { BOOK_STATUS, STATUS_COLOR, STATUS_EMOJI } from '../../reading/constants
 import { adminApi } from '../../utils/api'
 import { useAuth } from '../../contexts/AuthContext'
 
-/* ─── Helpers ────────────────────────────────────────────────── */
+/* --- Helpers -------------------------------------------------- */
 const SCOLOR = (status) => STATUS_COLOR[status] || 'var(--text-muted)'
 
 function StatusPill({ status }) {
@@ -28,14 +28,14 @@ function StarRating({ value, onChange, readonly = false }) {
         <button key={star} type="button"
           onClick={() => !readonly && onChange && onChange(star === value ? null : star)}
           style={{ fontSize: 20, lineHeight: 1, background: 'none', border: 'none', cursor: readonly ? 'default' : 'pointer', color: star <= (value || 0) ? 'var(--warning)' : 'var(--border)' }}>
-          ★
+          ?
         </button>
       ))}
     </div>
   )
 }
 
-/* ─── Book Form ──────────────────────────────────────────────── */
+/* --- Book Form ------------------------------------------------ */
 const EMPTY = { title: '', author: '', category: '', publisher: '', year: '', totalPages: '', cover: '', status: 'Belum Dibaca', startDate: '', targetDate: '', finishedDate: '', rating: null, notes: '' }
 
 /* --- Cover Input dengan upload ke Drive --- */
@@ -174,7 +174,7 @@ function BookForm({ initial = EMPTY, categories, onSave, onCancel }) {
   )
 }
 
-/* ─── Book Detail ────────────────────────────────────────────── */
+/* --- Book Detail ---------------------------------------------- */
 function BookDetail({ book, sessions, onEdit, onDelete, onClose, isAdmin }) {
   const bSessions = sessions.filter(s => s.bookId === book.id).sort((a, b) => b.date.localeCompare(a.date))
   const totPages = bSessions.reduce((s, x) => s + (x.pagesRead || 0), 0)
@@ -184,12 +184,12 @@ function BookDetail({ book, sessions, onEdit, onDelete, onClose, isAdmin }) {
     <div style={{ display: 'flex', flexDirection: 'column', gap: 18 }}>
       <div style={{ display: 'flex', gap: 16 }}>
         <div style={{ width: 60, height: 80, borderRadius: 10, backgroundColor: 'var(--bg-hover)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 28, flexShrink: 0, overflow: 'hidden' }}>
-          {book.cover ? <img src={book.cover} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} /> : '📖'}
+          {book.cover ? <img src={book.cover} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} /> : '??'}
         </div>
         <div style={{ flex: 1, minWidth: 0 }}>
           <h2 style={{ fontSize: 15.5, fontWeight: 700, color: 'var(--text-primary)', marginBottom: 5, lineHeight: 1.3, display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>{book.title}</h2>
           <p style={{ fontSize: 13.5, color: 'var(--text-secondary)', marginBottom: 3 }}>{book.author}</p>
-          {book.publisher && <p style={{ fontSize: 12.5, color: 'var(--text-muted)', marginBottom: 8 }}>{book.publisher}{book.year ? ` · ${book.year}` : ''}</p>}
+          {book.publisher && <p style={{ fontSize: 12.5, color: 'var(--text-muted)', marginBottom: 8 }}>{book.publisher}{book.year ? ` � ${book.year}` : ''}</p>}
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
             <StatusPill status={book.status} />
             {book.category && <span style={{ display: 'inline-flex', alignItems: 'center', padding: '3px 9px', borderRadius: 99, fontSize: 12, backgroundColor: 'var(--accent-dim)', color: 'var(--accent-light)' }}>{book.category}</span>}
@@ -218,7 +218,7 @@ function BookDetail({ book, sessions, onEdit, onDelete, onClose, isAdmin }) {
         {[['Mulai', book.startDate], ['Target', book.targetDate], ['Selesai', book.finishedDate]].map(([l, v]) => (
           <div key={l}>
             <p style={{ fontSize: 12, color: 'var(--text-muted)', marginBottom: 2 }}>{l}</p>
-            <p style={{ fontSize: 13, color: 'var(--text-primary)' }}>{v || '—'}</p>
+            <p style={{ fontSize: 13, color: 'var(--text-primary)' }}>{v || '�'}</p>
           </div>
         ))}
       </div>
@@ -227,12 +227,12 @@ function BookDetail({ book, sessions, onEdit, onDelete, onClose, isAdmin }) {
 
       {bSessions.length > 0 && (
         <div>
-          <p style={{ fontSize: 12, fontWeight: 600, color: 'var(--text-muted)', marginBottom: 8 }}>Riwayat Sesi · {totPages} hal · {totMin} mnt</p>
+          <p style={{ fontSize: 12, fontWeight: 600, color: 'var(--text-muted)', marginBottom: 8 }}>Riwayat Sesi � {totPages} hal � {totMin} mnt</p>
           <div style={{ maxHeight: '12rem', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: 4 }}>
             {bSessions.slice(0, 10).map(s => (
               <div key={s.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', fontSize: 12.5, padding: '8px 12px', borderRadius: 8, backgroundColor: 'var(--bg-hover)' }}>
                 <span style={{ color: 'var(--text-muted)' }}>{s.date}</span>
-                <span style={{ color: 'var(--text-primary)' }}>Hal {s.startPage}–{s.endPage}</span>
+                <span style={{ color: 'var(--text-primary)' }}>Hal {s.startPage}�{s.endPage}</span>
                 <span style={{ color: 'var(--accent)' }}>+{s.pagesRead} hal</span>
                 <span style={{ color: 'var(--text-muted)' }}>{s.duration} mnt</span>
               </div>
@@ -254,7 +254,7 @@ function BookDetail({ book, sessions, onEdit, onDelete, onClose, isAdmin }) {
   )
 }
 
-/* ─── Book Card (Grid) ───────────────────────────────────────── */
+/* --- Book Card (Grid) ----------------------------------------- */
 function BookCard({ book, onClick }) {
   const pct = book.totalPages ? Math.round(((book.currentPage || 0) / book.totalPages) * 100) : null
   const color = SCOLOR(book.status)
@@ -262,14 +262,14 @@ function BookCard({ book, onClick }) {
     <div onClick={onClick} style={{ padding: 14, borderRadius: 12, backgroundColor: 'var(--bg-card)', border: '1px solid var(--border)', cursor: 'pointer', transition: 'all 0.2s' }}
       onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = 'var(--shadow-md)'; e.currentTarget.style.borderColor = 'var(--border-strong)' }}
       onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = 'none'; e.currentTarget.style.borderColor = 'var(--border)' }}>
-      <div style={{ width: '100%', aspectRatio: '2/3', borderRadius: 9, marginBottom: 12, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 40, overflow: 'hidden', backgroundColor: 'var(--bg-hover)' }}>
-        {book.cover ? <img src={book.cover} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} /> : '📖'}
+      <div style={{ width: '100%', aspectRatio: '3/4', borderRadius: 9, marginBottom: 12, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 40, overflow: 'hidden', backgroundColor: 'var(--bg-hover)' }}>
+        {book.cover ? <img src={book.cover} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} /> : '??'}
       </div>
       <h3 style={{ fontSize: 13, fontWeight: 600, color: 'var(--text-primary)', lineHeight: 1.4, display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden', marginBottom: 4 }}>{book.title}</h3>
       <p style={{ fontSize: 12, color: 'var(--text-secondary)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', marginBottom: 8 }}>{book.author}</p>
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         <StatusPill status={book.status} />
-        {book.rating && <span style={{ fontSize: 12, color: 'var(--warning)' }}>{'★'.repeat(book.rating)}</span>}
+        {book.rating && <span style={{ fontSize: 12, color: 'var(--warning)' }}>{'?'.repeat(book.rating)}</span>}
       </div>
       {pct !== null && (
         <div style={{ marginTop: 8 }}>
@@ -281,28 +281,28 @@ function BookCard({ book, onClick }) {
   )
 }
 
-/* ─── Book Row (List) ────────────────────────────────────────── */
+/* --- Book Row (List) ------------------------------------------ */
 function BookRow({ book, onClick }) {
   return (
     <div onClick={onClick} style={{ display: 'flex', alignItems: 'center', gap: 14, padding: '12px 16px', borderRadius: 10, backgroundColor: 'var(--bg-card)', border: '1px solid var(--border)', cursor: 'pointer', transition: 'all 0.15s' }}
       onMouseEnter={e => { e.currentTarget.style.backgroundColor = 'var(--bg-card-alt)'; e.currentTarget.style.borderColor = 'var(--border-strong)' }}
       onMouseLeave={e => { e.currentTarget.style.backgroundColor = 'var(--bg-card)'; e.currentTarget.style.borderColor = 'var(--border)' }}>
       <div style={{ width: 36, height: 48, borderRadius: 6, backgroundColor: 'var(--bg-hover)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 18, flexShrink: 0, overflow: 'hidden' }}>
-        {book.cover ? <img src={book.cover} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} /> : '📖'}
+        {book.cover ? <img src={book.cover} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} /> : '??'}
       </div>
       <div style={{ flex: 1, minWidth: 0 }}>
         <p style={{ fontSize: 13.5, fontWeight: 500, color: 'var(--text-primary)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{book.title}</p>
         <p style={{ fontSize: 12.5, color: 'var(--text-secondary)', marginTop: 2, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{book.author}</p>
       </div>
-      <span className="hidden sm:block" style={{ fontSize: 12.5, color: 'var(--accent)', flexShrink: 0 }}>{book.category || '—'}</span>
+      <span className="hidden sm:block" style={{ fontSize: 12.5, color: 'var(--accent)', flexShrink: 0 }}>{book.category || '�'}</span>
       <div className="hidden sm:flex"><StatusPill status={book.status} /></div>
-      {book.rating ? <span style={{ fontSize: 12.5, color: 'var(--warning)', flexShrink: 0 }}>{'★'.repeat(book.rating)}</span> : <span style={{ width: 48 }} />}
-      <span style={{ fontSize: 12.5, color: 'var(--text-muted)', flexShrink: 0, width: 72, textAlign: 'right' }}>{book.totalPages ? `${book.totalPages} hal` : '—'}</span>
+      {book.rating ? <span style={{ fontSize: 12.5, color: 'var(--warning)', flexShrink: 0 }}>{'?'.repeat(book.rating)}</span> : <span style={{ width: 48 }} />}
+      <span style={{ fontSize: 12.5, color: 'var(--text-muted)', flexShrink: 0, width: 72, textAlign: 'right' }}>{book.totalPages ? `${book.totalPages} hal` : '�'}</span>
     </div>
   )
 }
 
-/* ─── Main Page ──────────────────────────────────────────────── */
+/* --- Main Page ------------------------------------------------ */
 export default function MyBooks() {
   const { books, sessions, categories, addBook, updateBook, deleteBook } = useReading()
   const { isAdmin } = useAuth()
@@ -416,7 +416,7 @@ export default function MyBooks() {
 
       {/* Book list */}
       {filtered.length === 0 ? (
-        <EmptyState icon="📚" title="Belum ada buku"
+        <EmptyState icon="??" title="Belum ada buku"
           description="Tambahkan buku pertamamu untuk mulai melacak perjalanan membaca."
           action={isAdmin ? <button onClick={() => { setEditBook(null); setShowForm(true) }} style={{ display: 'inline-flex', alignItems: 'center', gap: 7, height: 40, padding: '0 16px', borderRadius: 10, backgroundColor: 'var(--accent)', color: '#fff', fontSize: 14, fontWeight: 500, border: 'none', cursor: 'pointer' }}><FiPlus size={15} /> Tambah Buku</button> : undefined}
         />
