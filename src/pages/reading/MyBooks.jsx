@@ -294,9 +294,9 @@ function BookCard({ book, onClick }) {
       </div>
       <h3 style={{ fontSize: 13, fontWeight: 600, color: 'var(--text-primary)', lineHeight: 1.4, display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden', marginBottom: 4 }}>{book.title}</h3>
       <p style={{ fontSize: 12, color: 'var(--text-secondary)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', marginBottom: 8 }}>{book.author}</p>
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 4, overflow: 'hidden' }}>
         <StatusPill status={book.status} />
-        {book.rating && <span style={{ display:'flex', gap:1, alignItems:'center' }}>{Array.from({length:book.rating||0}).map((_,i)=><FiStar key={i} size={11} style={{color:'var(--warning)',fill:'var(--warning)'}}/>)}</span>}
+        {book.rating && <span style={{ display:'flex', gap:1, alignItems:'center', flexShrink:0 }}>{Array.from({length:book.rating||0}).map((_,i)=><FiStar key={i} size={10} style={{color:'var(--warning)',fill:'var(--warning)'}}/>)}</span>}
       </div>
       {pct !== null && (
         <div style={{ marginTop: 8 }}>
