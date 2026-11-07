@@ -39,6 +39,7 @@ const Tugas              = lazy(() => import('./pages/Tugas'))
 const Catatan            = lazy(() => import('./pages/Catatan'))
 const Literasi           = lazy(() => import('./pages/Literasi'))
 const Search             = lazy(() => import('./pages/Search'))
+const Schedule = lazy(() => import('./pages/Schedule'))
 const Admin              = lazy(() => import('./pages/Admin'))
 
 const ReadingDashboard   = lazy(() => import('./pages/reading/ReadingDashboard'))
@@ -80,7 +81,8 @@ export default function App() {
                     <Route path="/catatan"               element={<Catatan />} />
                     <Route path="/literasi"              element={<Literasi />} />
                     <Route path="/search"                element={<Search />} />
-                    <Route path="/admin"                 element={<Admin />} />
+                    <Route path="/jadwal" element={<Schedule />} />
+                  <Route path="/admin"                 element={<Admin />} />
                     <Route path="/reading"               element={<ReadingDashboard />} />
                     <Route path="/reading/books"         element={<MyBooks />} />
                     <Route path="/reading/activity"      element={<ReadingActivity />} />
