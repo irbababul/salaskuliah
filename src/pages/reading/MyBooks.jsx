@@ -296,7 +296,7 @@ function BookCard({ book, onClick }) {
       <p style={{ fontSize: 12, color: 'var(--text-secondary)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', marginBottom: 8 }}>{book.author}</p>
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         <StatusPill status={book.status} />
-        {book.rating && <span style={{ fontSize: 12, color: 'var(--warning)' }}>{Array.from({length:book.rating||0}).map((_,i)=><FiStar key={i} size={12} style={{color:'var(--warning)',fill:'var(--warning)'}}/>)}</span>}
+        {book.rating && <span style={{ display:'flex', gap:1, alignItems:'center' }}>{Array.from({length:book.rating||0}).map((_,i)=><FiStar key={i} size={11} style={{color:'var(--warning)',fill:'var(--warning)'}}/>)}</span>}
       </div>
       {pct !== null && (
         <div style={{ marginTop: 8 }}>
