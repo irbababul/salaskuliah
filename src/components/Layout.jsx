@@ -12,7 +12,6 @@ const mainNav = [
   { to: '/', icon: FiHome, label: 'Dashboard' },
   { to: '/materi', icon: FiBook, label: 'Materi Kuliah' },
   { to: '/tugas', icon: FiFileText, label: 'Tugas' },
-  { to: '/jadwal', icon: FiCalendar, label: 'Jadwal' },
   { to: '/catatan', icon: FiEdit3, label: 'Catatan' },
   { to: '/literasi', icon: FiBookOpen, label: 'Literasi' },
   { to: '/search', icon: FiSearch, label: 'Pencarian' },
