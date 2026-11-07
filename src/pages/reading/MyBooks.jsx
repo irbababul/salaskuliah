@@ -1,5 +1,5 @@
 import React, { useState, useRef, useMemo, useEffect } from 'react'
-import { FiPlus, FiEdit2, FiTrash2, FiGrid, FiList, FiSearch, FiX, FiChevronDown, FiChevronUp } from 'react-icons/fi'
+import { FiPlus, FiEdit2, FiTrash2, FiGrid, FiList, FiSearch, FiX, FiChevronDown, FiChevronUp, FiStar } from 'react-icons/fi'
 import { useReading } from '../../reading/ReadingContext'
 import Modal from '../../reading/components/Modal'
 import ProgressBar from '../../reading/components/ProgressBar'
@@ -27,8 +27,8 @@ function StarRating({ value, onChange, readonly = false }) {
       {[1, 2, 3, 4, 5].map(star => (
         <button key={star} type="button"
           onClick={() => !readonly && onChange && onChange(star === value ? null : star)}
-          style={{ fontSize: 22, lineHeight: 1, background: 'none', border: 'none', cursor: readonly ? 'default' : 'pointer', color: star <= (value || 0) ? 'var(--warning)' : 'var(--text-muted)', padding: '0 1px' }}>
-          {star <= (value || 0) ? '★' : '☆'}
+          style={{ background: 'none', border: 'none', cursor: readonly ? 'default' : 'pointer', padding: '0 1px', display: 'flex', alignItems: 'center' }}>
+          <FiStar size={18} style={{ color: star <= (value || 0) ? 'var(--warning)' : 'var(--text-muted)', fill: star <= (value || 0) ? 'var(--warning)' : 'none', transition: 'color 0.15s' }}/>
         </button>
       ))}
     </div>
@@ -296,7 +296,7 @@ function BookCard({ book, onClick }) {
       <p style={{ fontSize: 12, color: 'var(--text-secondary)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', marginBottom: 8 }}>{book.author}</p>
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         <StatusPill status={book.status} />
-        {book.rating && <span style={{ fontSize: 12, color: 'var(--warning)' }}>{'?'.repeat(book.rating)}</span>}
+        {book.rating && <span style={{ fontSize: 12, color: 'var(--warning)' }}>{Array.from({length:book.rating||0}).map((_,i)=><FiStar key={i} size={12} style={{color:'var(--warning)',fill:'var(--warning)'}}/>)}</span>}
       </div>
       {pct !== null && (
         <div style={{ marginTop: 8 }}>
@@ -323,7 +323,7 @@ function BookRow({ book, onClick }) {
       </div>
       <span className="hidden sm:block" style={{ fontSize: 12.5, color: 'var(--accent)', flexShrink: 0 }}>{book.category || '�'}</span>
       <div className="hidden sm:flex"><StatusPill status={book.status} /></div>
-      {book.rating ? <span style={{ fontSize: 12.5, color: 'var(--warning)', flexShrink: 0 }}>{'?'.repeat(book.rating)}</span> : <span style={{ width: 48 }} />}
+      {book.rating ? <span style={{ fontSize: 12.5, color: 'var(--warning)', flexShrink: 0 }}>{Array.from({length:book.rating||0}).map((_,i)=><FiStar key={i} size={12} style={{color:'var(--warning)',fill:'var(--warning)'}}/>)}</span> : <span style={{ width: 48 }} />}
       <span style={{ fontSize: 12.5, color: 'var(--text-muted)', flexShrink: 0, width: 72, textAlign: 'right' }}>{book.totalPages ? `${book.totalPages} hal` : '�'}</span>
     </div>
   )
