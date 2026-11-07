@@ -189,7 +189,7 @@ function BookDetail({ book, sessions, onEdit, onDelete, onClose, isAdmin }) {
         <div style={{ flex: 1, minWidth: 0 }}>
           <h2 style={{ fontSize: 15.5, fontWeight: 700, color: 'var(--text-primary)', marginBottom: 5, lineHeight: 1.3, display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>{book.title}</h2>
           <p style={{ fontSize: 13.5, color: 'var(--text-secondary)', marginBottom: 3 }}>{book.author}</p>
-          {book.publisher && <p style={{ fontSize: 12.5, color: 'var(--text-muted)', marginBottom: 8 }}>{book.publisher}{book.year ? ` · ${book.year}` : ''}</p>}
+          {book.publisher && <p style={{ fontSize: 12.5, color: 'var(--text-muted)', marginBottom: 8 }}>{book.publisher}{book.year ? ` ï¿½ ${book.year}` : ''}</p>}
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
             <StatusPill status={book.status} />
             {book.category && <span style={{ display: 'inline-flex', alignItems: 'center', padding: '3px 9px', borderRadius: 99, fontSize: 12, backgroundColor: 'var(--accent-dim)', color: 'var(--accent-light)' }}>{book.category}</span>}
@@ -218,7 +218,7 @@ function BookDetail({ book, sessions, onEdit, onDelete, onClose, isAdmin }) {
         {[['Mulai', book.startDate], ['Target', book.targetDate], ['Selesai', book.finishedDate]].map(([l, v]) => (
           <div key={l}>
             <p style={{ fontSize: 12, color: 'var(--text-muted)', marginBottom: 2 }}>{l}</p>
-            <p style={{ fontSize: 13, color: 'var(--text-primary)' }}>{v || '—'}</p>
+            <p style={{ fontSize: 13, color: 'var(--text-primary)' }}>{v || 'ï¿½'}</p>
           </div>
         ))}
       </div>
@@ -227,12 +227,12 @@ function BookDetail({ book, sessions, onEdit, onDelete, onClose, isAdmin }) {
 
       {bSessions.length > 0 && (
         <div>
-          <p style={{ fontSize: 12, fontWeight: 600, color: 'var(--text-muted)', marginBottom: 8 }}>Riwayat Sesi · {totPages} hal · {totMin} mnt</p>
+          <p style={{ fontSize: 12, fontWeight: 600, color: 'var(--text-muted)', marginBottom: 8 }}>Riwayat Sesi ï¿½ {totPages} hal ï¿½ {totMin} mnt</p>
           <div style={{ maxHeight: '12rem', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: 4 }}>
             {bSessions.slice(0, 10).map(s => (
               <div key={s.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', fontSize: 12.5, padding: '8px 12px', borderRadius: 8, backgroundColor: 'var(--bg-hover)' }}>
                 <span style={{ color: 'var(--text-muted)' }}>{s.date}</span>
-                <span style={{ color: 'var(--text-primary)' }}>Hal {s.startPage}–{s.endPage}</span>
+                <span style={{ color: 'var(--text-primary)' }}>Hal {s.startPage}ï¿½{s.endPage}</span>
                 <span style={{ color: 'var(--accent)' }}>+{s.pagesRead} hal</span>
                 <span style={{ color: 'var(--text-muted)' }}>{s.duration} mnt</span>
               </div>
@@ -294,10 +294,10 @@ function BookRow({ book, onClick }) {
         <p style={{ fontSize: 13.5, fontWeight: 500, color: 'var(--text-primary)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{book.title}</p>
         <p style={{ fontSize: 12.5, color: 'var(--text-secondary)', marginTop: 2, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{book.author}</p>
       </div>
-      <span className="hidden sm:block" style={{ fontSize: 12.5, color: 'var(--accent)', flexShrink: 0 }}>{book.category || '—'}</span>
+      <span className="hidden sm:block" style={{ fontSize: 12.5, color: 'var(--accent)', flexShrink: 0 }}>{book.category || 'ï¿½'}</span>
       <div className="hidden sm:flex"><StatusPill status={book.status} /></div>
       {book.rating ? <span style={{ fontSize: 12.5, color: 'var(--warning)', flexShrink: 0 }}>{'?'.repeat(book.rating)}</span> : <span style={{ width: 48 }} />}
-      <span style={{ fontSize: 12.5, color: 'var(--text-muted)', flexShrink: 0, width: 72, textAlign: 'right' }}>{book.totalPages ? `${book.totalPages} hal` : '—'}</span>
+      <span style={{ fontSize: 12.5, color: 'var(--text-muted)', flexShrink: 0, width: 72, textAlign: 'right' }}>{book.totalPages ? `${book.totalPages} hal` : 'ï¿½'}</span>
     </div>
   )
 }
