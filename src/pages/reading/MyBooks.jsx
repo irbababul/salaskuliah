@@ -27,8 +27,8 @@ function StarRating({ value, onChange, readonly = false }) {
       {[1, 2, 3, 4, 5].map(star => (
         <button key={star} type="button"
           onClick={() => !readonly && onChange && onChange(star === value ? null : star)}
-          style={{ fontSize: 20, lineHeight: 1, background: 'none', border: 'none', cursor: readonly ? 'default' : 'pointer', color: star <= (value || 0) ? 'var(--warning)' : 'var(--border)' }}>
-          ?
+          style={{ fontSize: 22, lineHeight: 1, background: 'none', border: 'none', cursor: readonly ? 'default' : 'pointer', color: star <= (value || 0) ? 'var(--warning)' : 'var(--text-muted)', padding: '0 1px' }}>
+          {star <= (value || 0) ? '★' : '☆'}
         </button>
       ))}
     </div>
@@ -43,9 +43,36 @@ function CoverInput({ value, onChange }) {
   const [uploading, setUploading] = useState(false)
   const [error, setError] = useState('')
   const [gisToken, setGisToken] = useState(window._cachedDriveToken || '')
+
+  // Auto-try silent login saat mount
+  useEffect(() => {
+    if (window._cachedDriveToken) { setGisToken(window._cachedDriveToken); return }
+    const tryInit = () => {
+      if (typeof google !== 'undefined' && google.accounts?.oauth2) {
+        const tc = google.accounts.oauth2.initTokenClient({
+          client_id: '55856679506-u1606nt9se2pv3itspj6o6uhr6ghcsrn.apps.googleusercontent.com',
+          scope: 'https://www.googleapis.com/auth/drive.file',
+          hint: 'iirsalas9@gmail.com',
+          callback: (r) => { if (r.access_token) { setGisToken(r.access_token); window._cachedDriveToken = r.access_token } },
+        })
+        window._driveTokenClient = tc
+        try { tc.requestAccessToken({ prompt: '' }) } catch(e) {}
+        return true
+      }
+      return false
+    }
+    if (!tryInit()) {
+      const t = setInterval(() => { if (tryInit()) clearInterval(t) }, 1000)
+      setTimeout(() => clearInterval(t), 10000)
+    }
+  }, [])
   const inputRef = useRef()
 
   function handleSignIn() {
+    if (typeof google === 'undefined' || !google.accounts) {
+      setError('Google Sign-In belum siap. Refresh halaman dan coba lagi.')
+      return
+    }
     const tokenClient = google.accounts.oauth2.initTokenClient({
       client_id: '55856679506-u1606nt9se2pv3itspj6o6uhr6ghcsrn.apps.googleusercontent.com',
       scope: 'https://www.googleapis.com/auth/drive.file',
