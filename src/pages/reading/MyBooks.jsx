@@ -123,7 +123,7 @@ function CoverInput({ value, onChange }) {
             style={{ width: '100%', padding: '10px 12px', borderRadius: 8, border: '1px solid var(--border)', backgroundColor: 'var(--bg-hover)', color: 'var(--text-primary)', fontSize: 13.5, outline: 'none', boxSizing: 'border-box' }}/>
         </div>
         {value && (
-          <img src={value} alt="cover preview" style={{ width: 48, height: 60, objectFit: 'contain', borderRadius: 6, flexShrink: 0, border: '1px solid var(--border)' }} onError={e=>e.target.style.display='none'}/>
+          <img src={value} alt="cover preview" style={{ width: 48, height: 60, objectFit: 'cover', borderRadius: 6, flexShrink: 0, border: '1px solid var(--border)' }} onError={e=>e.target.style.display='none'}/>
         )}
         <div style={{ display: 'flex', flexDirection: 'column', gap: 4, flexShrink: 0 }}>
           {!gisToken ? (
@@ -211,7 +211,7 @@ function BookDetail({ book, sessions, onEdit, onDelete, onClose, isAdmin }) {
     <div style={{ display: 'flex', flexDirection: 'column', gap: 18 }}>
       <div style={{ display: 'flex', gap: 16 }}>
         <div style={{ width: 60, height: 80, borderRadius: 10, backgroundColor: 'var(--bg-hover)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 28, flexShrink: 0, overflow: 'hidden' }}>
-          {book.cover ? <img src={book.cover} alt="" style={{ width: '100%', height: '100%', objectFit: 'contain' }} /> : '??'}
+          {book.cover ? <img src={book.cover} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} /> : '??'}
         </div>
         <div style={{ flex: 1, minWidth: 0 }}>
           <h2 style={{ fontSize: 15.5, fontWeight: 700, color: 'var(--text-primary)', marginBottom: 5, lineHeight: 1.3, display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>{book.title}</h2>
@@ -290,7 +290,7 @@ function BookCard({ book, onClick }) {
       onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = 'var(--shadow-md)'; e.currentTarget.style.borderColor = 'var(--border-strong)' }}
       onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = 'none'; e.currentTarget.style.borderColor = 'var(--border)' }}>
       <div style={{ width: '100%', aspectRatio: '1/1', borderRadius: 9, marginBottom: 12, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 40, overflow: 'hidden', backgroundColor: 'var(--bg-hover)' }}>
-        {book.cover ? <img src={book.cover} alt="" style={{ width: '100%', height: '100%', objectFit: 'contain' }} /> : '??'}
+        {book.cover ? <img src={book.cover} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} /> : '??'}
       </div>
       <h3 style={{ fontSize: 13, fontWeight: 600, color: 'var(--text-primary)', lineHeight: 1.4, display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden', marginBottom: 4 }}>{book.title}</h3>
       <p style={{ fontSize: 12, color: 'var(--text-secondary)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', marginBottom: 8 }}>{book.author}</p>
@@ -315,7 +315,7 @@ function BookRow({ book, onClick }) {
       onMouseEnter={e => { e.currentTarget.style.backgroundColor = 'var(--bg-card-alt)'; e.currentTarget.style.borderColor = 'var(--border-strong)' }}
       onMouseLeave={e => { e.currentTarget.style.backgroundColor = 'var(--bg-card)'; e.currentTarget.style.borderColor = 'var(--border)' }}>
       <div style={{ width: 36, height: 48, borderRadius: 6, backgroundColor: 'var(--bg-hover)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 18, flexShrink: 0, overflow: 'hidden' }}>
-        {book.cover ? <img src={book.cover} alt="" style={{ width: '100%', height: '100%', objectFit: 'contain' }} /> : '??'}
+        {book.cover ? <img src={book.cover} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} /> : '??'}
       </div>
       <div style={{ flex: 1, minWidth: 0 }}>
         <p style={{ fontSize: 13.5, fontWeight: 500, color: 'var(--text-primary)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{book.title}</p>
