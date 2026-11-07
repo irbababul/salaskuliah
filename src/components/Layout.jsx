@@ -3,7 +3,7 @@ import { NavLink, useLocation, useNavigate } from 'react-router-dom'
 import {
   FiHome, FiBook, FiFileText, FiEdit3, FiBookOpen, FiSearch, FiMenu, FiX,
   FiSun, FiMoon, FiLock, FiChevronDown, FiChevronRight,
-  FiBarChart2, FiTarget, FiCalendar, FiAward, FiPieChart, FiTrendingUp,
+  FiBarChart2, FiTarget, FiCalendar, FiClock, FiAward, FiPieChart, FiTrendingUp,
   FiActivity, FiBookmark, FiLogOut, FiShield,
 } from 'react-icons/fi'
 import { useAuth } from '../contexts/AuthContext'
@@ -107,6 +107,10 @@ function SidebarInner({ theme, toggleTheme, onClose }) {
       <nav style={{ flex:1,overflowY:'auto',padding:'14px 8px',display:'flex',flexDirection:'column',gap:18 }}>
         <NavSection title="Akademik" accentColor="var(--accent)" defaultOpen={!isReading} isActive={!isReading}>
           {mainNav.map(({ to, icon, label }) => <NavItem key={to} to={to} icon={icon} label={label} exact={to==='/'} />)}
+        </NavSection>
+        <div style={{ height:1,background:'var(--border)',margin:'0 6px' }}/>
+        <NavSection title="Jadwal" accentColor="var(--warning)" defaultOpen={false} isActive={location.pathname==='/jadwal'}>
+          <NavItem to="/jadwal" icon={FiClock} label="Jadwal Harian" />
         </NavSection>
         <div style={{ height:1,background:'var(--border)',margin:'0 6px' }}/>
         <NavSection title="Reading Tracker" accentColor="var(--success)" defaultOpen={isReading} isActive={isReading}>
