@@ -1,4 +1,4 @@
-import React, { useState, useRef, useMemo } from 'react'
+import React, { useState, useRef, useMemo, useEffect } from 'react'
 import { FiPlus, FiEdit2, FiTrash2, FiGrid, FiList, FiSearch, FiX, FiChevronDown, FiChevronUp } from 'react-icons/fi'
 import { useReading } from '../../reading/ReadingContext'
 import Modal from '../../reading/components/Modal'
