@@ -122,6 +122,24 @@ export const adminApi = {
   getDriveFiles: (folderId) => request('/admin/drive-files?folder_id=' + folderId),
   deleteDriveFile: (fileId) => request('/admin/drive-files?file_id=' + fileId, { method: 'DELETE' }),
 
+  // Reading Tracker
+  getReadingBooks: () => request('/admin/reading-books'),
+  createReadingBook: (b) => request('/admin/reading-books', { method:'POST', body:b }),
+  updateReadingBook: (id, b) => request('/admin/reading-books', { method:'PUT', body:{id,...b} }),
+  deleteReadingBook: (id) => request('/admin/reading-books?id='+id, { method:'DELETE' }),
+
+  getReadingSessions: (bookId) => request('/admin/reading-sessions'+(bookId?'?bookId='+bookId:'')),
+  createReadingSession: (s) => request('/admin/reading-sessions', { method:'POST', body:s }),
+  deleteReadingSession: (id) => request('/admin/reading-sessions?id='+id, { method:'DELETE' }),
+
+  getReadingJournals: (bookId) => request('/admin/reading-journals'+(bookId?'?bookId='+bookId:'')),
+  createReadingJournal: (j) => request('/admin/reading-journals', { method:'POST', body:j }),
+  updateReadingJournal: (id, j) => request('/admin/reading-journals', { method:'PUT', body:{id,...j} }),
+  deleteReadingJournal: (id) => request('/admin/reading-journals?id='+id, { method:'DELETE' }),
+
+  getReadingGoals: () => request('/admin/reading-goals'),
+  saveReadingGoals: (g) => request('/admin/reading-goals', { method:'POST', body:g }),
+
   // Auth
   login: (password) => request('/auth/login', { method: 'POST', body: { password } }),
   logout: () => request('/auth/logout', { method: 'POST' }),

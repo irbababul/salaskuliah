@@ -28,6 +28,10 @@ const COLUMNS = {
   literature:             ['id','title','author','year','type','topic','summary','source_url','drive_file_id','drive_view_url','tags','is_published','created_at','updated_at','deleted_at'],
   announcements:          ['id','title','content','priority','is_published','published_at','expires_at','created_at','updated_at','deleted_at'],
   drive_folders:          ['id','drive_folder_id','folder_name','parent_folder_id','semester_id','course_id','folder_type','created_at'],
+  reading_books:          ['id','title','author','category','status','totalPages','currentPage','startDate','targetDate','finishedDate','cover','rating','notes','publisher','year','createdAt','updatedAt'],
+  reading_sessions:       ['id','bookId','date','startPage','endPage','pagesRead','duration','notes','createdAt'],
+  reading_journals:       ['id','bookId','date','title','content','mood','tags','createdAt'],
+  reading_goals:          ['id','yearlyTarget','dailyPages','startDate','endDate','updatedAt'],
 }
 
 // ── Helper: baris header → object ────────────────────────────

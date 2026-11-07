@@ -239,6 +239,11 @@ export function useReadingStore() {
   return {
     // data
     books,
+    // setters (untuk sync dari Sheets)
+    setBooks,
+    setSessions,
+    setJournals,
+    setGoals,
     sessions,
     journals,
     goals,

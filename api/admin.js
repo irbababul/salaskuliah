@@ -357,6 +357,83 @@ module.exports = async function handler(req, res) {
         return sendJson(res, 200, { success: true, message: 'File dihapus' })
       }
     }
+
+    // ?? reading_books ??????????????????????????????????????????
+    if (action === 'reading-books') {
+      if (req.method === 'GET') {
+        return sendJson(res, 200, { success:true, data: await readSheet('reading_books') })
+      }
+      if (req.method === 'POST') {
+        const b = body; if (!b.id) b.id = uid('rb'); b.createdAt = b.createdAt||now(); b.updatedAt = now()
+        await appendRow('reading_books', b); return sendJson(res, 201, { success:true, data:b })
+      }
+      if (req.method === 'PUT') {
+        const { id, ...u } = body; if (!id) return sendError(res, 400, 'id required')
+        return sendJson(res, 200, { success:true, data: await updateRowById('reading_books', id, u) })
+      }
+      if (req.method === 'DELETE') {
+        const id = q.id||body.id; if (!id) return sendError(res, 400, 'id required')
+        await deleteRowById('reading_books', id, false); return sendJson(res, 200, { success:true })
+      }
+    }
+
+    // ?? reading_sessions ????????????????????????????????????????
+    if (action === 'reading-sessions') {
+      if (req.method === 'GET') {
+        let data = await readSheet('reading_sessions')
+        if (q.bookId) data = data.filter(r=>r.bookId===q.bookId)
+        return sendJson(res, 200, { success:true, data })
+      }
+      if (req.method === 'POST') {
+        const s = body; if (!s.id) s.id = uid('rs'); s.createdAt = s.createdAt||now()
+        await appendRow('reading_sessions', s); return sendJson(res, 201, { success:true, data:s })
+      }
+      if (req.method === 'DELETE') {
+        const id = q.id||body.id; if (!id) return sendError(res, 400, 'id required')
+        await deleteRowById('reading_sessions', id, false); return sendJson(res, 200, { success:true })
+      }
+    }
+
+    // ?? reading_journals ????????????????????????????????????????
+    if (action === 'reading-journals') {
+      if (req.method === 'GET') {
+        let data = await readSheet('reading_journals')
+        if (q.bookId) data = data.filter(r=>r.bookId===q.bookId)
+        return sendJson(res, 200, { success:true, data })
+      }
+      if (req.method === 'POST') {
+        const j = body; if (!j.id) j.id = uid('rj'); j.createdAt = j.createdAt||now()
+        await appendRow('reading_journals', j); return sendJson(res, 201, { success:true, data:j })
+      }
+      if (req.method === 'PUT') {
+        const { id, ...u } = body; if (!id) return sendError(res, 400, 'id required')
+        return sendJson(res, 200, { success:true, data: await updateRowById('reading_journals', id, u) })
+      }
+      if (req.method === 'DELETE') {
+        const id = q.id||body.id; if (!id) return sendError(res, 400, 'id required')
+        await deleteRowById('reading_journals', id, false); return sendJson(res, 200, { success:true })
+      }
+    }
+
+    // ?? reading_goals ???????????????????????????????????????????
+    if (action === 'reading-goals') {
+      if (req.method === 'GET') {
+        const data = await readSheet('reading_goals')
+        return sendJson(res, 200, { success:true, data: data[0]||{} })
+      }
+      if (req.method === 'POST' || req.method === 'PUT') {
+        const g = {...body, updatedAt: now()}
+        const existing = await readSheet('reading_goals')
+        if (existing.length > 0) {
+          await updateRowById('reading_goals', existing[0].id||'goals', g)
+        } else {
+          if (!g.id) g.id = 'goals'
+          await appendRow('reading_goals', g)
+        }
+        return sendJson(res, 200, { success:true, data:g })
+      }
+    }
+
     sendError(res, 404, 'Not found: ' + action)
   } catch (err) {
     console.error('[/api/admin/' + action + ']', err.message)
