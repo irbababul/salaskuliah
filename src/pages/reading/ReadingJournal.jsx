@@ -133,6 +133,9 @@ function JDetail({ journal, bTitle }) {
   )
 }
 
+// Normalize tags - handle string or array
+function normTags(t) { if (!t) return []; if (Array.isArray(t)) return t; if (typeof t === 'string') return t.split(',').map(s=>s.trim()).filter(Boolean); return [] }
+
 export default function ReadingJournal() {
   const { books, journals, addJournal, updateJournal, deleteJournal } = useReading()
   const { isAdmin } = useAuth()
@@ -145,8 +148,6 @@ export default function ReadingJournal() {
   const [delConfirm, setDelConfirm] = useState(null)
 
   const bTitle = id => books.find(b=>b.id===id)?.title
-  // Normalize tags - bisa string atau array
-  const normTags = (t) => { if (!t) return []; if (Array.isArray(t)) return t; if (typeof t === 'string') return t.split(',').map(s=>s.trim()).filter(Boolean); return [] }
   const allTags = useMemo(()=>{const s=new Set();journals.forEach(j=>normTags(j.tags).forEach(t=>s.add(t)));return [...s].sort()},[journals])
   const filtered = useMemo(()=>{
     let l=[...journals]
