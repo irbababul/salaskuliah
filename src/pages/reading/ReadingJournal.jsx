@@ -90,7 +90,7 @@ function JCard({ journal, bTitle, onEdit, onDelete, onView, isAdmin }) {
       {journal.content && <p style={{fontSize:13,color:'var(--text-secondary)',lineHeight:1.55,display:'-webkit-box',WebkitLineClamp:2,WebkitBoxOrient:'vertical',overflow:'hidden',marginBottom:8}}>{journal.content}</p>}
       <div style={{display:'flex',flexWrap:'wrap',gap:5}}>
         {hasTpl && <span style={{fontSize:11.5,padding:'2px 8px',borderRadius:99,backgroundColor:'var(--purple-dim)',color:'var(--purple)'}}>✍️ Refleksi</span>}
-        {(journal.tags||[]).slice(0,3).map(t=>(
+        {normTags(journal.tags).slice(0,3).map(t=>(
           <span key={t} style={{fontSize:11.5,padding:'2px 8px',borderRadius:99,backgroundColor:'var(--bg-hover)',color:'var(--text-muted)',display:'inline-flex',alignItems:'center',gap:4}}><FiTag size={9}/>{t}</span>
         ))}
       </div>
@@ -108,9 +108,9 @@ function JDetail({ journal, bTitle }) {
         {journal.chapterRef && <span style={{color:'var(--text-muted)'}}>📄 {journal.chapterRef}</span>}
         <span style={{color:'var(--text-muted)'}}>📅 {new Date(journal.createdAt).toLocaleDateString('id-ID',{day:'numeric',month:'long',year:'numeric'})}</span>
       </div>
-      {(journal.tags||[]).length > 0 && (
+      {normTags(journal.tags).length > 0 && (
         <div style={{display:'flex',flexWrap:'wrap',gap:5}}>
-          {journal.tags.map(t=><span key={t} style={{fontSize:12.5,padding:'3px 9px',borderRadius:99,backgroundColor:'var(--bg-hover)',color:'var(--text-muted)'}}>#{t}</span>)}
+          {normTags(journal.tags).map(t=><span key={t} style={{fontSize:12.5,padding:'3px 9px',borderRadius:99,backgroundColor:'var(--bg-hover)',color:'var(--text-muted)'}}>#{t}</span>)}
         </div>
       )}
       {journal.content && <div style={{padding:14,borderRadius:10,backgroundColor:'var(--bg-hover)',fontSize:14,color:'var(--text-primary)',lineHeight:1.7}}>{journal.content}</div>}
@@ -145,12 +145,14 @@ export default function ReadingJournal() {
   const [delConfirm, setDelConfirm] = useState(null)
 
   const bTitle = id => books.find(b=>b.id===id)?.title
-  const allTags = useMemo(()=>{const s=new Set();journals.forEach(j=>(j.tags||[]).forEach(t=>s.add(t)));return [...s].sort()},[journals])
+  // Normalize tags - bisa string atau array
+  const normTags = (t) => { if (!t) return []; if (Array.isArray(t)) return t; if (typeof t === 'string') return t.split(',').map(s=>s.trim()).filter(Boolean); return [] }
+  const allTags = useMemo(()=>{const s=new Set();journals.forEach(j=>normTags(j.tags).forEach(t=>s.add(t)));return [...s].sort()},[journals])
   const filtered = useMemo(()=>{
     let l=[...journals]
-    if (search){const q=search.toLowerCase();l=l.filter(j=>j.title.toLowerCase().includes(q)||j.content?.toLowerCase().includes(q)||(j.tags||[]).some(t=>t.toLowerCase().includes(q))||RKEYS.some(k=>j[k]?.toLowerCase().includes(q)))}
+    if (search){const q=search.toLowerCase();l=l.filter(j=>j.title.toLowerCase().includes(q)||j.content?.toLowerCase().includes(q)||normTags(j.tags).some(t=>t.toLowerCase().includes(q))||RKEYS.some(k=>j[k]?.toLowerCase().includes(q)))}
     if (filterBookId) l=l.filter(j=>j.bookId===filterBookId)
-    if (filterTag) l=l.filter(j=>(j.tags||[]).includes(filterTag))
+    if (filterTag) l=l.filter(j=>normTags(j.tags).includes(filterTag))
     return l
   },[journals,search,filterBookId,filterTag])
 
