@@ -1,5 +1,6 @@
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect } from 'react'
 import { FiBook, FiEdit3, FiUsers, FiCoffee, FiCheckSquare, FiPlus, FiX, FiEdit2, FiTrash2, FiSettings } from 'react-icons/fi'
+import { adminApi } from '../utils/api'
 
 const HARI_LIST = ['Senin','Selasa','Rabu','Kamis','Jumat','Sabtu','Minggu']
 
@@ -35,8 +36,8 @@ const DEFAULT_SLOTS = {
 const SK = 'sk_schedule_v2'
 const KK = 'sk_kuliah_v2'
 
-function load(key, def) { try { return JSON.parse(localStorage.getItem(key)) || def } catch { return def } }
-function save(key, val) { localStorage.setItem(key, JSON.stringify(val)) }
+function loadLocal(key, def) { try { return JSON.parse(localStorage.getItem(key)) || def } catch { return def } }
+function saveLocal(key, val) { localStorage.setItem(key, JSON.stringify(val)) }
 
 function toMin(t) { const [h,m]=t.split(':').map(Number); return h*60+m }
 function dur(a,b) { return Math.max(0, toMin(b)-toMin(a)) }
@@ -193,14 +194,99 @@ export default function Schedule() {
   const dayIdx = new Date().getDay()
   const today = HARI_LIST[dayIdx === 0 ? 6 : dayIdx - 1]
   const [activeDay, setActiveDay] = useState(today)
-  const [schedule, setSchedule] = useState(() => load(SK, DEFAULT_SLOTS))
-  const [kuliah, setKuliah] = useState(() => load(KK, DEFAULT_KULIAH))
+  const [schedule, setSchedule] = useState(() => loadLocal(SK, DEFAULT_SLOTS))
+  const [kuliah, setKuliah] = useState(() => loadLocal(KK, DEFAULT_KULIAH))
   const [actModal, setActModal] = useState(null)
   const [kuliahModal, setKuliahModal] = useState(null)
   const [tab, setTab] = useState('jadwal') // 'jadwal' | 'matkul'
+  const [synced, setSynced] = useState(false)
 
-  function saveSchedule(s) { setSchedule(s); save(SK, s) }
-  function saveKuliah(k) { setKuliah(k); save(KK, k) }
+  // Load dari Sheets saat mount
+  useEffect(() => {
+    async function loadFromSheets() {
+      try {
+        const [slotsRes, kuliahRes] = await Promise.all([
+          adminApi.getScheduleSlots().catch(()=>({data:[]})),
+          adminApi.getScheduleKuliah().catch(()=>({data:[]})),
+        ])
+        // Convert flat array ke object per hari
+        if (slotsRes.data?.length > 0) {
+          const byDay = {}
+          slotsRes.data.forEach(s => {
+            if (!byDay[s.hari]) byDay[s.hari] = []
+            byDay[s.hari].push(s)
+          })
+          // Sort per hari
+          Object.keys(byDay).forEach(h => byDay[h].sort((a,b)=>a.mulai.localeCompare(b.mulai)))
+          setSchedule(byDay)
+          saveLocal(SK, byDay)
+        }
+        if (kuliahRes.data?.length > 0) {
+          setKuliah(kuliahRes.data)
+          saveLocal(KK, kuliahRes.data)
+        }
+        setSynced(true)
+        console.log('[Schedule] Loaded from Sheets')
+      } catch(e) {
+        console.warn('[Schedule] Using localStorage:', e.message)
+        setSynced(true)
+      }
+    }
+    loadFromSheets()
+  }, []) // eslint-disable-line
+
+  function saveSchedule(s) {
+    setSchedule(s)
+    saveLocal(SK, s)
+    // Sync flat list ke Sheets (background)
+    const flat = []
+    Object.entries(s).forEach(([hari, slots]) => {
+      slots.forEach(slot => flat.push({...slot, hari}))
+    })
+    syncSlotsToSheets(flat).catch(e=>console.warn('[Schedule] sync fail:', e.message))
+  }
+
+  async function syncSlotsToSheets(flat) {
+    // Clear existing dan insert baru
+    const existing = await adminApi.getScheduleSlots().catch(()=>({data:[]}))
+    // Delete yang tidak ada lagi
+    const newIds = new Set(flat.map(s=>s.id).filter(Boolean))
+    for (const e of (existing.data||[])) {
+      if (!newIds.has(e.id)) await adminApi.deleteScheduleSlot(e.id).catch(()=>{})
+    }
+    // Upsert semua slot
+    const existingIds = new Set((existing.data||[]).map(e=>e.id))
+    for (const slot of flat) {
+      if (slot.id && existingIds.has(slot.id)) {
+        await adminApi.saveScheduleSlot(slot).catch(()=>{})
+      } else {
+        const newSlot = {...slot, id: slot.id || ('ss_'+Date.now()+'_'+Math.random().toString(36).slice(2))}
+        await adminApi.saveScheduleSlot(newSlot).catch(()=>{})
+      }
+    }
+  }
+  function saveKuliah(k) {
+    setKuliah(k)
+    saveLocal(KK, k)
+    // Sync ke Sheets
+    syncKuliahToSheets(k).catch(e=>console.warn('[Schedule] kuliah sync fail:', e.message))
+  }
+
+  async function syncKuliahToSheets(list) {
+    const existing = await adminApi.getScheduleKuliah().catch(()=>({data:[]}))
+    const newIds = new Set(list.map(k=>k.id).filter(Boolean))
+    for (const e of (existing.data||[])) {
+      if (!newIds.has(e.id)) await adminApi.deleteScheduleKuliah(e.id).catch(()=>{})
+    }
+    const existingIds = new Set((existing.data||[]).map(e=>e.id))
+    for (const k of list) {
+      if (k.id && existingIds.has(k.id)) {
+        await adminApi.saveScheduleKuliah(k).catch(()=>{})
+      } else {
+        await adminApi.saveScheduleKuliah({...k, id: k.id||('sk_'+Date.now()+'_'+Math.random().toString(36).slice(2))}).catch(()=>{})
+      }
+    }
+  }
 
   function handleSaveAkt(form) {
     const slots = [...(schedule[activeDay]||[])]

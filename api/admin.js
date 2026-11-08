@@ -434,6 +434,49 @@ module.exports = async function handler(req, res) {
       }
     }
 
+
+    // ?? schedule_slots ?????????????????????????????????????????
+    if (action === 'schedule-slots') {
+      if (req.method === 'GET') {
+        return sendJson(res, 200, { success:true, data: await readSheet('schedule_slots') })
+      }
+      if (req.method === 'POST') {
+        const s = body; if (!s.id) s.id = uid('ss')
+        await appendRow('schedule_slots', s)
+        return sendJson(res, 201, { success:true, data:s })
+      }
+      if (req.method === 'PUT') {
+        const { id, ...u } = body
+        return sendJson(res, 200, { success:true, data: await updateRowById('schedule_slots', id, u) })
+      }
+      if (req.method === 'DELETE') {
+        const id = q.id||body.id
+        await deleteRowById('schedule_slots', id, false)
+        return sendJson(res, 200, { success:true })
+      }
+    }
+
+    // ?? schedule_kuliah ?????????????????????????????????????????
+    if (action === 'schedule-kuliah') {
+      if (req.method === 'GET') {
+        return sendJson(res, 200, { success:true, data: await readSheet('schedule_kuliah') })
+      }
+      if (req.method === 'POST') {
+        const k = body; if (!k.id) k.id = uid('sk')
+        await appendRow('schedule_kuliah', k)
+        return sendJson(res, 201, { success:true, data:k })
+      }
+      if (req.method === 'PUT') {
+        const { id, ...u } = body
+        return sendJson(res, 200, { success:true, data: await updateRowById('schedule_kuliah', id, u) })
+      }
+      if (req.method === 'DELETE') {
+        const id = q.id||body.id
+        await deleteRowById('schedule_kuliah', id, false)
+        return sendJson(res, 200, { success:true })
+      }
+    }
+
     sendError(res, 404, 'Not found: ' + action)
   } catch (err) {
     console.error('[/api/admin/' + action + ']', err.message)

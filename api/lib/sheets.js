@@ -32,6 +32,8 @@ const COLUMNS = {
   reading_sessions:       ['id','bookId','date','startPage','endPage','pagesRead','duration','notes','createdAt'],
   reading_journals:       ['id','bookId','date','title','content','mood','tags','createdAt'],
   reading_goals:          ['id','yearlyTarget','dailyPages','startDate','endDate','updatedAt'],
+  schedule_slots:         ['id','hari','type','mulai','selesai','catatan'],
+  schedule_kuliah:        ['id','hari','nama','kode','mulai','selesai','ruang'],
 }
 
 // ── Helper: baris header → object ────────────────────────────

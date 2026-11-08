@@ -140,6 +140,14 @@ export const adminApi = {
   getReadingGoals: () => request('/admin/reading-goals'),
   saveReadingGoals: (g) => request('/admin/reading-goals', { method:'POST', body:g }),
 
+  // Schedule
+  getScheduleSlots: () => request('/admin/schedule-slots'),
+  saveScheduleSlot: (s) => request('/admin/schedule-slots', { method: s.id ? 'PUT' : 'POST', body: s }),
+  deleteScheduleSlot: (id) => request('/admin/schedule-slots?id=' + id, { method: 'DELETE' }),
+  getScheduleKuliah: () => request('/admin/schedule-kuliah'),
+  saveScheduleKuliah: (k) => request('/admin/schedule-kuliah', { method: k.id ? 'PUT' : 'POST', body: k }),
+  deleteScheduleKuliah: (id) => request('/admin/schedule-kuliah?id=' + id, { method: 'DELETE' }),
+
   // Auth
   login: (password) => request('/auth/login', { method: 'POST', body: { password } }),
   logout: () => request('/auth/logout', { method: 'POST' }),
